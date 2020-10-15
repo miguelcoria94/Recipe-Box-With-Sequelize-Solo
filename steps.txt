@@ -1,0 +1,121 @@
+**** STEPS FOR TODAY PROJECT ****
+
+1. Run "npm install" to install the packages
+
+2. Run "npm run dev" to start the server on port 3000
+
+3. Initialize the project by typing "npx sequelize-cli init".
+That will create the project structure that Sequelize expects for us to continue to use its tools
+
+4. create a new user for this application named "sequelizerecipe_box_app" with the password "HfKfK79k" _and
+the ability to create a database. TYPE THIS:
+
+"CREATE USER sequelizerecipe_box_app WITH PASSWORD 'HfKfK79k' CREATEDB;"
+
+5. INSIDE CONFIG -> CONFIG.JSON (MAKE SURE YOU CHANGE ALL OF THESE)
+Change all the "user" and "password" values to the information for the user that you created in Phase 2.
+
+Change the "database" values to be "recipe_box_development", "recipe_box_test", and "recipe_box_production"
+
+Change all of the "dialect" values from "mysql" to "postgres".
+
+BY  THE END OF PHASE 2 YOUR CONFIG.JSON SHOULD LOOK LIKE THIS :
+
+{
+  "development": {
+    "username": "sequelizerecipe_box_app",
+    "password": "HfKfK79k",
+    "database": "recipe_box_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
+  },
+  "test": {
+    "username": "sequelizerecipe_box_app",
+    "password": "HfKfK79k",
+    "database": "recipe_box_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
+  },
+  "production": {
+    "username": "sequelizerecipe_box_app",
+    "password": "HfKfK79k",
+    "database": "recipe_box_production",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "seederStorage": "sequelize"
+  }
+}
+
+6. Create your database run:
+
+"npx sequelize-cli db:create"
+
+That runs the Sequelize CLI with the command db:create.
+
+7. Create the first migration, the one that defines the table that will hold units of measure.
+
+Run: 
+
+npx sequelize-cli model:generate \
+  --name MeasurementUnit \
+  --attributes name:string
+  
+That will create two files, if everything works well. (models/measurementunit.js)(migrations/20200101012349-MeasurementUnit.js)
+
+8. Because the data model requires the "name" column to be both non-null and unique, you have to add some information to the migration file.
+also,  add the "unique" property set to true to the "name" configuration, as well. That should be enough for Sequelize to create the table for you.
+The last thing to do is to change the length of the "name" property.
+
+IN THE "20201015164124-create-measurement-unit.js" FILE (YOURS WILL HAVE A DIFFERENT NUMBER):
+
+add this to the name property:
+
+name: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING(20)
+      }
+
+YOUR "20201015164124-create-measurement-unit.js" FILE (YOURS WILL HAVE A DIFFERENT NUMBER) should look like this:
+
+'use strict';
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('MeasurementUnits', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      name: {
+        allowNull: false,
+        unique: true,
+        type: Sequelize.STRING(20)
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('MeasurementUnits');
+  }
+};
+
+9. Run your migration
+
+In your command line type: 
+
+npx sequelize-cli db:migrate
+
+
+
+
